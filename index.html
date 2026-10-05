@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emlak360 | Yeni Nesil Emlak Platformu</title>
+    <!-- Harita Kütüphanesi (Leaflet) -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Tasarım Dosyalarımız -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <!-- YÜKLEME EKRANI -->
+    <div id="splash-screen">
+        <div class="splash-content">
+            <h1 class="splash-title">Emlak360</h1>
+            <p class="splash-subtitle">Hayallerinizdeki Eve Hoş Geldiniz...</p>
+            <div class="splash-loader"></div>
+        </div>
+    </div>
+
+    <!-- ÖZEL SAĞ TIK MENÜSÜ -->
+    <div id="customContextMenu" class="custom-context-menu">
+        <ul>
+            <li onclick="alert('İlan favorilere eklendi')">⭐ Favorilere Ekle</li>
+            <li onclick="navigator.clipboard.writeText(window.location.href); alert('Link kopyalandı!')">🔗 Linki Kopyala</li>
+            <li onclick="alert('Satıcıya mesaj modülü açılacak')">📩 Danışmana Sor</li>
+            <li class="close-menu">✖ Kapat</li>
+        </ul>
+    </div>
+
+    <!-- SAĞ ALTTA TAKİP EDEN HIZLI İLAN BUTONU -->
+    <a href="#" id="floatingAdBtn" class="floating-add-btn">
+        <span style="font-size: 24px; line-height: 0;">+</span> Hızlı İlan Ver
+    </a>
+
+    <!-- ÜST MENÜ -->
+    <nav class="top-nav">
+        <h1>Emlak360</h1>
+        <ul>
+            <li><a href="index.html" onclick="window.location.reload();">Ana Sayfa</a></li>
+            <li><a href="#" onclick="openHeatmap()" style="color: #fbc531; font-weight: bold; border: 1px solid #fbc531; padding: 8px 15px; border-radius: 8px; box-shadow: 0 0 10px rgba(251, 197, 49, 0.2);">🗺️ Yatırım Isı Haritası</a></li>
+            <li><a href="pages/about.html">Hakkımızda & İletişim</a></li>
+            <li><a href="#" id="loginNavBtn">Giriş Yap</a></li>
+            <li><a href="#" id="postAdBtn" class="highlight-btn">İlan Ver</a></li>
+        </ul>
+    </nav>
+
+    <!-- ANA İÇERİK KONTEYNERİ -->
+    <main class="main-container">
+        
+        <!-- TAM ORTALANMIŞ ANA KATEGORİ SEÇİMİ -->
+        <div id="main-categories" class="hero-categories">
+            <div class="category-btn main-btn" data-main="satilik" style="background-image: url('https://images.unsplash.com/photo-1600596542815-ffad4c1539a9?w=1000');">
+                <div class="btn-overlay-main">SATILIK</div>
+            </div>
+            <div class="category-btn main-btn" data-main="kiralik" style="background-image: url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=1000');">
+                <div class="btn-overlay-main">KİRALIK</div>
+            </div>
+        </div>
+
+        <!-- İLAN LİSTELEME EKRANI -->
+        <div id="listings-layout" class="content-layout" style="display: none;">
+            
+            <aside class="sidebar">
+                <button id="backToMainBtn">⬅ Ana Seçime Dön</button>
+                <h3 id="selectedMainTitle" style="color:white; margin-bottom: 20px; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px;"></h3>
+                
+                <div class="accordion">
+                    <div class="accordion-item">
+                        <button class="accordion-header">🏠 Konut</button>
+                        <div class="accordion-content">
+                            <a href="#" class="sub-link" data-type="daire">Daire</a>
+                            <a href="#" class="sub-link" data-type="rezidans">Rezidans</a>
+                            <a href="#" class="sub-link" data-type="mustakil">Müstakil Ev</a>
+                            <a href="#" class="sub-link" data-type="villa">Villa</a>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header">🏢 İş Yeri</button>
+                        <div class="accordion-content">
+                            <a href="#" class="sub-link" data-type="ofis">Ofis & Büro</a>
+                            <a href="#" class="sub-link" data-type="dukkan">Dükkan & Mağaza</a>
+                            <a href="#" class="sub-link" data-type="depo">Depo & Antrepo</a>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <button class="accordion-header">🌲 Arsa</button>
+                        <div class="accordion-content">
+                            <a href="#" class="sub-link" data-type="imarli">İmarlı Arsa</a>
+                            <a href="#" class="sub-link" data-type="tarla">Tarla</a>
+                            <a href="#" class="sub-link" data-type="zeytinlik">Zeytinlik</a>
+                        </div>
+                    </div>
+                </div>
+            </aside>
+
+            <section class="main-panel">
+                <!-- DİNAMİK FİLTRE ÇUBUĞU (İl ve İlçe Dahil) -->
+                <div id="filterBar" class="filter-bar">
+                    <select class="filter-input" id="filterCity">
+                        <option value="Hepsi">İl Seçin</option>
+                    </select>
+                    <select class="filter-input" id="filterDistrict">
+                        <option value="Hepsi">İlçe Seçin</option>
+                    </select>
+                    <input type="number" class="filter-input" id="filterMin" placeholder="Min TL">
+                    <input type="number" class="filter-input" id="filterMax" placeholder="Max TL">
+                    <select class="filter-input" id="filterRoom">
+                        <option value="Hepsi">Oda Sayısı</option>
+                        <option value="1+1">1+1</option>
+                        <option value="2+1">2+1</option>
+                        <option value="3+1">3+1</option>
+                        <option value="4+1">4+1</option>
+                        <option value="5+2">5+2</option>
+                    </select>
+                    <button class="search-btn" id="executeSearchBtn">Filtrele</button>
+                </div>
+                
+                <div id="listingsContainer" class="listings"></div>
+            </section>
+        </div>
+    </main>
+
+    <!-- GERÇEKÇİ AİLE YÜRÜYÜŞ ANİMASYONU -->
+    <div class="animation-road">
+        <div class="family-group">
+            <img src="https://cdn-icons-png.flaticon.com/512/3443/3443338.png" alt="Yürüyen Aile" class="walking-family-img">
+        </div>
+        <div class="dream-house">🏡✨</div>
+    </div>
+
+    <!-- KURUMSAL FOOTER -->
+    <footer class="corporate-footer">
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h2>Emlak360</h2>
+                <p>Güvenilir ve hızlı gayrimenkul platformu. Hayallerinizdeki eve saniyeler içinde ulaşın.</p>
+            </div>
+            <div class="footer-links">
+                <h3>Hızlı Menü</h3>
+                <ul>
+                    <li><a href="pages/about.html">Hakkımızda</a></li>
+                    <li><a href="#">Satılık İlanlar</a></li>
+                    <li><a href="pages/seller-panel.html">İlan Ver</a></li>
+                </ul>
+            </div>
+            <div class="footer-contact">
+                <h3>İletişim</h3>
+                <p>📍 İskenderun, Hatay</p>
+                <p>📞 +90 555 123 45 67</p>
+                <p>✉️ info@emlak360.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Emlak360 Tüm Hakları Saklıdır. | Geliştirici: Alper Kılınç</p>
+        </div>
+    </footer>
+
+    <!-- ISI HARİTASI MODALI (HEATMAP) -->
+    <div id="heatmapModal" class="custom-modal">
+        <div class="detail-content" style="width: 95%; max-width: 1400px; height: 90vh; padding: 20px; display: flex; flex-direction: column;">
+            <button class="close-gallery" onclick="closeHeatmap()" style="position:absolute; right: 20px; top: 20px; z-index:9999; background: #ff4757; border:none;">✖ Kapat</button>
+            
+            <div style="text-align: center; margin-bottom: 20px; padding-top: 10px;">
+                <h2 style="color: #fbc531; font-size: 32px; margin-bottom: 10px; font-weight: 900; letter-spacing: 1px;">Geleceğiniz İçin Sağlam Kararlar Verin 🚀</h2>
+                <p style="color: #b2bec3; font-size: 16px; max-width: 800px; margin: 0 auto;">
+                    Türkiye geneli Arsa ve Tarla yatırımlarında en çok değer kazanan ve talep gören sıcak bölgeleri (Hotspots) yapay zeka destekli ısı haritamız üzerinden anlık olarak analiz edebilirsiniz.
+                </p>
+            </div>
+            
+            <div id="turkeyMap" style="flex: 1; width: 100%; border-radius: 15px; border: 2px solid rgba(255,255,255,0.1); z-index: 1;"></div>
+        </div>
+    </div>
+
+    <!-- PROFESYONEL İLAN DETAY MODALI -->
+    <div id="detailModal" class="custom-modal">
+        <div class="detail-content">
+            <button class="close-gallery" onclick="closeDetailModal()" style="position:absolute; right: 20px; top: 20px; z-index:10;">✖ Kapat</button>
+            <div class="detail-grid">
+                <div class="detail-left">
+                    <img id="detailImage" src="" alt="İlan Fotoğrafı">
+                </div>
+                <div class="detail-right">
+                    <h2 id="detailTitle" style="font-size: 24px; margin-bottom: 5px;">İlan Başlığı</h2>
+                    <p id="detailLocation" style="color: #b2bec3; margin-bottom: 15px;">İl / İlçe</p>
+                    <div id="detailPrice" style="color: #ff4757; font-size: 32px; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; margin-bottom: 15px;">Fiyat</div>
+                    
+                    <div class="detail-specs" id="dynamicSpecsContainer">
+                        <!-- JS ile Dinamik Doldurulacak -->
+                    </div>
+
+                    <div class="detail-desc" style="margin-top: 20px; background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px;">
+                        <h4 style="margin-bottom: 10px; color: var(--primary-color);">İlan Açıklaması</h4>
+                        <p id="detailDesc" style="font-size: 14px; line-height: 1.6; color: #dcdde1;"></p>
+                    </div>
+
+                    <button class="search-btn" style="width: 100%; margin-top: 20px; background: #4cd137; border-color: #4cd137; padding: 15px; font-size: 18px;" onclick="alert('Mesaj modülü açılıyor...')">Satıcıya Mesaj Gönder</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- KULLANICI GİRİŞİ / KAYIT MODALI -->
+    <div id="authModal" class="custom-modal">
+        <div class="auth-content">
+            <button class="close-gallery" id="closeAuthBtn" style="position: absolute; right: 20px; top: 20px;">✖</button>
+            <div class="auth-tabs">
+                <button class="auth-tab-btn active" onclick="switchAuthTab('login')">Giriş Yap</button>
+                <button class="auth-tab-btn" onclick="switchAuthTab('register')">Kayıt Ol</button>
+            </div>
+            
+            <div id="loginForm" class="auth-form active">
+                <h3>Hesabınıza Giriş Yapın</h3>
+                <input type="email" id="loginEmail" placeholder="E-posta Adresi" class="filter-input" style="width:100%; margin-bottom:15px; background: rgba(255,255,255,0.1); color:white;">
+                <input type="password" id="loginPass" placeholder="Şifre" class="filter-input" style="width:100%; margin-bottom:20px; background: rgba(255,255,255,0.1); color:white;">
+                <button class="search-btn" style="width:100%; font-size: 18px;" onclick="executeLogin()">Giriş Yap</button>
+            </div>
+
+            <div id="registerForm" class="auth-form" style="display:none;">
+                <h3>Yeni Hesap Oluştur</h3>
+                <input type="text" id="regName" placeholder="Ad Soyad" class="filter-input" style="width:100%; margin-bottom:15px; background: rgba(255,255,255,0.1); color:white;">
+                <input type="email" id="regEmail" placeholder="E-posta Adresi" class="filter-input" style="width:100%; margin-bottom:15px; background: rgba(255,255,255,0.1); color:white;">
+                <input type="password" id="regPass" placeholder="Şifre" class="filter-input" style="width:100%; margin-bottom:20px; background: rgba(255,255,255,0.1); color:white;">
+                <button class="search-btn" style="width:100%; font-size: 18px; background: var(--primary-color);" onclick="executeRegister()">Kayıt Ol</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Emlak360 | Yönetim Paneli</title>
+    <link rel="stylesheet" href="../css/global.css">
+    <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <aside class="dashboard-sidebar admin-sidebar">
+            <div class="sidebar-logo">Emlak360 <span>Admin</span></div>
+            <ul class="sidebar-menu">
+                <li><a href="#">📈 Genel Bakış</a></li>
+                <li class="active"><a href="#">🔔 Bekleyen İlanlar <span class="badge" id="pendingCount">0</span></a></li>
+                <li><a href="../index.html">🔙 Siteye Dön</a></li>
+            </ul>
+        </aside>
+
+        <main class="dashboard-content">
+            <header class="dashboard-header">
+                <h2>Onay Bekleyen İlanlar</h2>
+                <div class="user-profile admin-profile">Yetki: <strong>Süper Admin</strong></div>
+            </header>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>İlan ID</th>
+                            <th>Başlık</th>
+                            <th>Satıcı</th>
+                            <th>Fiyat</th>
+                            <th>Tarih</th>
+                            <th>Durum</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminTableBody">
+                        <!-- JS İle Doldurulacak -->
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <!-- İLAN İNCELEME MODALI -->
+    <div id="previewModal" class="custom-modal">
+        <div class="modal-content admin-modal" style="background: white; padding: 40px; border-radius: 15px; width: 500px; color: #333;">
+            <h2 id="previewTitle" style="color: #192a56; margin-bottom: 15px;">İlan Önizlemesi</h2>
+            <div class="preview-details" style="background: #f5f6fa; padding: 20px; border-radius: 10px; line-height: 1.8;">
+                <p><strong>Satıcı:</strong> <span id="previewSeller"></span></p>
+                <p><strong>Fiyat:</strong> <span id="previewPrice" style="color: #e55039; font-weight: bold;"></span></p>
+                <p><strong>Açıklama:</strong> <span id="previewDesc"></span></p>
+            </div>
+            <div class="action-buttons" style="display: flex; gap: 10px; margin-top: 25px;">
+                <button onclick="approveListing()" style="flex: 1; background: #4cd137; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">✅ Onayla ve Yayına Al</button>
+                <button onclick="rejectListing()" style="flex: 1; background: #e84118; color: white; padding: 12px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">❌ Reddet</button>
+                <button onclick="closePreview()" style="background: #7f8fa6; color: white; padding: 12px 20px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">Kapat</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/admin.js"></script>
+</body>
+</html>

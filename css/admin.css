@@ -1,0 +1,46 @@
+/* css/admin.css */
+body { background-color: #f5f6fa; color: #2f3640; overflow-y: auto; }
+
+.dashboard-container { display: flex; min-height: 100vh; }
+
+/* Admin Sidebar (Farklılaştırmak için daha koyu lacivert tonu) */
+.admin-sidebar { background: #192a56; }
+.sidebar-logo { padding: 30px 20px; font-size: 24px; font-weight: 800; border-bottom: 1px solid rgba(255,255,255,0.1); color: white;}
+.sidebar-logo span { color: #fbc531; /* Admin'e özel sarı vurgu */ }
+.sidebar-menu { list-style: none; padding: 20px 0; }
+.sidebar-menu li a { display: block; padding: 15px 25px; color: #dcdde1; text-decoration: none; font-weight: 600; transition: 0.3s; }
+.sidebar-menu li a:hover, .sidebar-menu li.active a { background: rgba(255,255,255,0.1); color: white; border-left: 4px solid #fbc531; }
+.badge { background: #e84118; color: white; padding: 2px 8px; border-radius: 10px; font-size: 12px; margin-left: 10px; }
+
+/* Ana İçerik */
+.dashboard-content { flex: 1; padding: 40px; }
+.dashboard-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 40px; }
+.admin-profile { background: white; padding: 10px 20px; border-radius: 20px; box-shadow: 0 5px 15px rgba(0,0,0,0.05); border-left: 4px solid #fbc531;}
+
+/* Tablo Tasarımı */
+.table-container { background: white; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); overflow: hidden; }
+.admin-table { width: 100%; border-collapse: collapse; text-align: left; }
+.admin-table th { background: #fdfdfd; padding: 20px; color: #7f8fa6; font-weight: 600; font-size: 14px; border-bottom: 2px solid #f1f2f6; }
+.admin-table td { padding: 20px; border-bottom: 1px solid #f1f2f6; font-size: 15px; vertical-align: middle; }
+.admin-table tr:hover { background: #fdfdfd; }
+
+/* Etiketler (Badges) */
+.status-badge { padding: 5px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+.status-pending { background: rgba(251, 197, 49, 0.2); color: #e1b12c; }
+.status-approved { background: rgba(76, 209, 55, 0.2); color: #44bd32; }
+
+/* Butonlar */
+.btn-view { background: #00a8ff; color: white; border: none; padding: 8px 15px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s;}
+.btn-view:hover { background: #0097e6; }
+
+/* Admin Modal */
+.custom-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); z-index: 2000; justify-content: center; align-items: center; }
+.admin-modal { background: white; padding: 40px; border-radius: 20px; width: 500px; max-width: 90%; }
+.preview-details { margin: 20px 0; padding: 20px; background: #f5f6fa; border-radius: 10px; line-height: 1.8; }
+.action-buttons { display: flex; gap: 10px; justify-content: space-between; margin-top: 20px; }
+.btn-approve { background: #4cd137; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; flex: 1; transition: 0.2s;}
+.btn-approve:hover { background: #44bd32; }
+.btn-reject { background: #e84118; color: white; border: none; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; flex: 1; transition: 0.2s;}
+.btn-reject:hover { background: #c23616; }
+.btn-close { background: transparent; border: 1px solid #7f8fa6; color: #7f8fa6; padding: 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+.btn-close:hover { background: #7f8fa6; color: white;}

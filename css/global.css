@@ -1,0 +1,76 @@
+/* css/global.css */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;800&display=swap');
+
+/* TASARIM SİSTEMİ DEĞİŞKENLERİ (Renk Kontrastı ve Erişilebilirlik) */
+:root {
+    --primary-color: #e55039; /* Vurgu rengi - Kırmızımsı turuncu */
+    --primary-hover: #eb2f06;
+    --bg-dark: #1e272e;
+    --bg-light: #f5f6fa;
+    --text-main: #2f3640;
+    --text-light: #dcdde1;
+    --glass-bg: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+    --font-main: 'Poppins', sans-serif;
+}
+
+/* RESET VE ERİŞİLEBİLİRLİK (A11y) */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: var(--font-main);
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+    overflow-x: hidden;
+}
+
+/* ÖZEL SAĞ TIK MENÜSÜ TASARIMI */
+.custom-context-menu {
+    position: absolute;
+    background: rgba(30, 39, 46, 0.95);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--glass-border);
+    border-radius: 12px;
+    width: 220px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    display: none;
+    z-index: 10000;
+    overflow: hidden;
+}
+
+.custom-context-menu ul {
+    list-style: none;
+    padding: 10px 0;
+}
+
+.custom-context-menu ul li {
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    transition: 0.2s ease;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.custom-context-menu ul li:hover {
+    background: var(--primary-color);
+    color: #fff;
+    padding-left: 25px; /* Hover animasyonu */
+}
+
+.custom-context-menu ul li.close-menu {
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin-top: 5px;
+    color: #ff7675;
+}
+.custom-context-menu ul li.close-menu:hover {
+    background: #d63031;
+    color: white;
+}
